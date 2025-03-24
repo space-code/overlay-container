@@ -10,7 +10,7 @@
 </p>
 
 ## Description
-`overlay-container` description.
+`overlay-container` is a lightweight Swift library for managing overlays and bottom sheets in iOS applications. It provides a flexible and customizable way to present draggable, resizable, and interactive overlays, making it easy to implement bottom sheets, modals, and other layered UI components.
 
 - [Usage](#usage)
 - [Requirements](#requirements)
@@ -22,7 +22,27 @@
 
 ## Usage
 
+```swift
+import OverlayContainer
+
+func presentSheet(_ viewController: UIViewController) {
+    let sheetViewController = OverlayContainer(
+        contentContainer: viewController,
+        configuration: .init(
+            cornerRadius: 16,
+            insets: .zero,
+            grabberType: .hidden
+        )
+    )
+    present(sheetViewController, animated: true)
+}
+```
+
 ## Requirements
+
+- iOS 12.0+
+- Xcode 16.0
+- Swift 5.7
 
 ## Installation
 ### Swift Package Manager

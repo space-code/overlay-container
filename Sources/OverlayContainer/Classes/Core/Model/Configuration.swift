@@ -7,6 +7,20 @@ import UIKit
 
 /// A struct to configure the appearance and behavior of a UI component.
 public struct Configuration {
+    public struct GrabberConfiguration {
+        /// The color of the grabber pin view.
+        public let grabberColor: UIColor
+
+        public init(grabberColor: UIColor = .gray) {
+            self.grabberColor = grabberColor
+        }
+    }
+
+    public enum GrabberType {
+        case hidden
+        case plain(GrabberConfiguration)
+    }
+
     // MARK: Properties
 
     /// The dimming color for the component.
@@ -17,8 +31,12 @@ public struct Configuration {
     public let animationDuration: TimeInterval
     /// The corner radius of the component.
     public let cornerRadius: CGFloat
-    /// The color of the grabber pin view.
-    public let grabberColor: UIColor
+
+    public let maskedCorners: CACornerMask
+    /// The sheet insets.
+    public let insets: UIEdgeInsets
+
+    public let grabberType: GrabberType
 
     // MARK: Initialization
 
@@ -35,12 +53,21 @@ public struct Configuration {
         backgroundColor: UIColor = .white,
         animationDuration: TimeInterval = 0.35,
         cornerRadius: CGFloat = 16.0,
-        grabberColor: UIColor = .gray
+        maskedCorners: CACornerMask = [
+            .layerMaxXMaxYCorner,
+            .layerMinXMinYCorner,
+            .layerMinXMaxYCorner,
+            .layerMaxXMinYCorner,
+        ],
+        insets: UIEdgeInsets = .zero,
+        grabberType: GrabberType = .plain(GrabberConfiguration())
     ) {
         self.dimmingColor = dimmingColor
         self.backgroundColor = backgroundColor
         self.animationDuration = animationDuration
         self.cornerRadius = cornerRadius
-        self.grabberColor = grabberColor
+        self.maskedCorners = maskedCorners
+        self.insets = insets
+        self.grabberType = grabberType
     }
 }

@@ -23,6 +23,13 @@ public final class OverlayContainer: UIViewController {
     /// Configuration settings for the appearance and behavior of the bottom sheet.
     private let configuration: Configuration
 
+    private var isGrabberHidden: Bool {
+        if case .hidden = configuration.grabberType {
+            return true
+        }
+        return false
+    }
+
     // MARK: Initialization
 
     /// Create a new `OverlayContainer` instance.
@@ -50,7 +57,7 @@ public final class OverlayContainer: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
 
-        setupLayout()
+        setupUI()
 
         transitionDriver = BottomSheetAnimatedTransitionDriver(controller: self)
 
@@ -79,33 +86,46 @@ public final class OverlayContainer: UIViewController {
 
     // MARK: Private
 
-    private func setupLayout() {
+    // swiftlint:disable:next function_body_length
+    private func setupUI() {
         addChild(contentContainer)
 
-        view.addSubview(grabberView)
+        if case let .plain(data) = configuration.grabberType {
+            view.addSubview(grabberView)
+            grabberView.backgroundColor = configuration.backgroundColor
+            grabberView.grabberColor = data.grabberColor
+            grabberView.translatesAutoresizingMaskIntoConstraints = false
+        }
+
         view.addSubview(contentView)
+
+        contentView.layer.cornerRadius = configuration.cornerRadius
+        contentView.layer.maskedCorners = configuration.maskedCorners
+        contentView.layer.masksToBounds = true
+        contentView.clipsToBounds = true
 
         contentContainer.view.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(contentContainer.view)
 
-        grabberView.backgroundColor = configuration.backgroundColor
-        grabberView.cornerRadius = configuration.cornerRadius
-        grabberView.grabberColor = configuration.grabberColor
-        grabberView.translatesAutoresizingMaskIntoConstraints = false
-
         contentView.backgroundColor = configuration.backgroundColor
         contentView.translatesAutoresizingMaskIntoConstraints = false
 
+        if !isGrabberHidden {
+            NSLayoutConstraint.activate(
+                [
+                    grabberView.topAnchor.constraint(equalTo: view.topAnchor, constant: configuration.insets.top),
+                    grabberView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: configuration.insets.left),
+                    view.trailingAnchor.constraint(equalTo: grabberView.trailingAnchor, constant: configuration.insets.right),
+                ]
+            )
+        }
+
         NSLayoutConstraint.activate(
             [
-                grabberView.topAnchor.constraint(equalTo: view.topAnchor),
-                grabberView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                view.trailingAnchor.constraint(equalTo: grabberView.trailingAnchor),
-
-                contentView.topAnchor.constraint(equalTo: grabberView.bottomAnchor),
-                contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-                view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+                contentView.topAnchor.constraint(equalTo: isGrabberHidden ? view.topAnchor : grabberView.bottomAnchor),
+                contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: configuration.insets.left),
+                view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: configuration.insets.right),
+                view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: configuration.insets.bottom),
 
                 contentContainer.view.topAnchor.constraint(equalTo: contentView.topAnchor),
                 contentContainer.view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),

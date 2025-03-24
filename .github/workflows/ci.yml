@@ -23,22 +23,12 @@ jobs:
         with:
           args: --strict
         env:
-          
           DIFF_BASE: ${{ github.base_ref }}
-          
-
-  
-
-  
   iOS:
-    
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.runsOn }}
-    
     env:
-      
       DEVELOPER_DIR: "/Applications/${{ matrix.xcode }}.app/Contents/Developer"
-      
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -54,31 +44,17 @@ jobs:
             runsOn: macos-13
     steps:
       - uses: actions/checkout@v3
-        
       - name: ${{ matrix.name }}
         run: xcodebuild test -scheme "{{ cookiecutter.name }}" -destination "${{ matrix.destination }}" clean -enableCodeCoverage YES -resultBundlePath "test_output/${{ matrix.name }}.xcresult" || exit 1
-        
       - uses: actions/upload-artifact@v4
         with:
-          
           name: ${{ matrix.name }}
           path: test_output
-          
-  
-
-  
-
-  
-
   spm:
-    
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.runsOn }}
-    
     env:
-      
       DEVELOPER_DIR: "/Applications/${{ matrix.xcode }}.app/Contents/Developer"
-      
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -92,10 +68,8 @@ jobs:
             runsOn: macos-13
     steps:
       - uses: actions/checkout@v3
-      
       - name: ${{ matrix.name }}
         run: swift build -c release --target "{{ cookiecutter.name }}"
-      
   merge-test-reports:
     needs: [iOS, macOS, watchOS, tvOS]
     runs-on: macos-13
@@ -110,10 +84,9 @@ jobs:
         with:
           name: MergedResult
           path: test_output/final
-
   discover-typos:
     name: Discover Typos
-    runs-on: macOS-12
+    runs-on: macOS-13
     env:
       DEVELOPER_DIR: /Applications/Xcode_14.1.app/Contents/Developer
     steps:
