@@ -54,7 +54,9 @@ extension BottomSheetAnimatedTransition: UIViewControllerAnimatedTransitioning {
     func interruptibleAnimator(
         using transitionContext: any UIViewControllerContextTransitioning
     ) -> any UIViewImplicitlyAnimating {
-        if let animator { return animator }
+        if let animator {
+            return animator
+        }
 
         if transitionType == .present {
             if let controller = transitionContext.viewController(forKey: .to) {
