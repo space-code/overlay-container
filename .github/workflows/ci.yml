@@ -39,7 +39,7 @@ jobs:
           - { platform: iOS, name: "iOS 17.4", xcode: "Xcode_15.3", runsOn: macOS-14, destination: "OS=17.4,name=iPhone 15 Pro" }
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Run tests - ${{ matrix.name }}
         run: |
           xcodebuild test \
